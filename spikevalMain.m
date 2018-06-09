@@ -13,12 +13,6 @@ Brian D. Allen, Caroline Moore-Kochlacs, Jacob G. Bernstein
 %}
 
 %{
-Code philosophy: we generally try to make the code as easy to read as 
-possible for the average neuroscientist. So we're not going to use 
-object oriented programming here.
-%}
-
-%{
 Pipette localization: the pipette tip sends a beacon signal that
 is detected across the electrode array. The amplitude of this signal 
 across electrodes, combined with the known geometry of the electrodes, 
@@ -34,6 +28,8 @@ options.dataset     = 'pipette_track_exemplar';
 % options.dataset = 'all_recordings';
 filename_cell       = spikevalLoadFilenames(options);
 
+fitfunction = @spikevalFitVoltagePulse;
+pulsethresh = 500;
 
 %{
 An algorithm for assessing potential spike sorting performance as a 
