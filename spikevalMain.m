@@ -18,6 +18,9 @@ is detected across the electrode array. The amplitude of this signal
 across electrodes, combined with the known geometry of the electrodes, 
 allows for an estimate of distance of the pipette tip to the electrode 
 array. A 1/r model of voltage dropoff was shown to be appropriate for this.
+
+The pipette localization code is adapted from Jacob Bernstein's original
+code.
 %}
 %%
 % Load data
@@ -25,10 +28,10 @@ options.dataset     = 'pipette_track_exemplar';
 % options.dataset = 'pipette_track_all';
 % options.dataset = 'paper_recordings';
 % options.dataset = 'all_recordings';
-filename_cell       = spikevalLoadFilenames(options);
 
-fitfunction = @spikevalFitVoltagePulse;
-pulsethresh = 500;
+options.override_pulse_times = true;
+spikevalLocalizePipette(options);
+
 %%
 %{
 An algorithm for assessing potential spike sorting performance as a 
@@ -37,10 +40,11 @@ considered as convolutions on the intracellular voltage, and deconvolution
 is used to derive the neuron's true spiking state (intracellular voltage) 
 from the electrode voltages.
 %}
+%{
 options.dataset                             = 'paper_recordings';
 filename_cell                               = spikevalLoadFilenames(options);
 
-options.total_t                             = 456;
+options.total_t                             = 10;%456;
 options.num_neurons                         = 12;
 options.num_convolution_filter_pts          = 512;
 options.zero_out_when_patch_doesnt_spike    = 1;
@@ -90,9 +94,13 @@ for neuron = 1:options.num_neurons
    % options.virtual_reference       = virtual_reference_cell{neuron};
     
     patch_voltage_estimator_struct  = sortaMakePatchVoltageEstimatorStruct(filename, options);
+    
+    options.experiment_type         = 1; % create a ROC curve on the raw electrode voltage
+    ROC_cell{neuron, options.experiment_type}             = sortaSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
+    
 end
 
-
+%}
 
 
 
