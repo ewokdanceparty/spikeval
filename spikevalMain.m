@@ -29,29 +29,29 @@ options.dataset     = 'pipette_track_exemplar';
 % options.dataset = 'paper_recordings';
 % options.dataset = 'all_recordings';
 
-options.override_pulse_times = true;
-spikevalLocalizePipette(options);
+options.override_pulse_times = false;
+% spikevalLocalizePipette(options);
 
 %%
 %{
 An algorithm for assessing potential spike sorting performance as a 
 function of electrode density and quantity. Extracellular signals are 
-considered as convolutions on the intracellular voltage, and deconvolution
+considered as convolutions of the intracellular voltage, and deconvolution
 is used to derive the neuron's true spiking state (intracellular voltage) 
 from the electrode voltages.
 %}
-%{
+
 options.dataset                             = 'paper_recordings';
 filename_cell                               = spikevalLoadFilenames(options);
 
-options.total_t                             = 10;%456;
+options.total_t                             = 45;%456;
 options.num_neurons                         = 12;
 options.num_convolution_filter_pts          = 512;
 options.zero_out_when_patch_doesnt_spike    = 1;
 options.isi_criterion                       = 0.02; % 20ms
 options.recording_with_only_58_electrodes   = filename_cell{5}; % set this to filename_cell{5} if analyzing the 12 neurons in the paper
 options.working_dir                         = '/media/user/NeuroData1/Dropbox (MIT)/spikeval';
-options.todays_fig_dir                      = '180612';
+options.todays_fig_dir                      = '180807';
 
 options.recording_with_only_58_electrodes   = filename_cell{5}; % set this to filename_cell{5} if analyzing the 12 neurons in the paper
 options.recording2_with_only_58_electrodes  = 'asdsdaazgasgf';
@@ -61,17 +61,17 @@ options.reverse_mea = 0;
 
 cd(options.working_dir)
 % Create directories for the project, if they don't already exist
-sortaGenerateDirLayout(options);
+spikevalGenerateDirLayout(options);
 
 options.use_derivative_vec  = [0 1 1 1 1 0 1 1 1 1 1 1 ];
 
 % The following only has to be run once. It takes a long time (~15 minutes)
 % to run
 
-options.get64BestElectrodes = 0;
+options.get64BestElectrodes = 1;
 
 if options.get64BestElectrodes
-    sortaGet64BestElectrodes(filename_cell, options)
+    spikevalGet64BestElectrodes(filename_cell, options)
 end
 
 load([options.working_dir '/config/electrode_order.mat']) % this loads electrode_order_cell into memory
@@ -100,7 +100,7 @@ for neuron = 1:options.num_neurons
     
 end
 
-%}
+
 
 
 
