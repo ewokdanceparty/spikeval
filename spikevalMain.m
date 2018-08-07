@@ -68,7 +68,7 @@ options.use_derivative_vec  = [0 1 1 1 1 0 1 1 1 1 1 1 ];
 % The following only has to be run once. It takes a long time (~15 minutes)
 % to run
 
-options.get64BestElectrodes = 1;
+options.get64BestElectrodes = 0;
 
 if options.get64BestElectrodes
     spikevalGet64BestElectrodes(filename_cell, options)
@@ -93,10 +93,10 @@ for neuron = 1:options.num_neurons
     options.electrode_order         = electrode_order_cell{neuron};
    % options.virtual_reference       = virtual_reference_cell{neuron};
     
-    patch_voltage_estimator_struct  = sortaMakePatchVoltageEstimatorStruct(filename, options);
+    patch_voltage_estimator_struct  = spikevalMakePatchVoltageEstimatorStruct(filename, options);
     
     options.experiment_type         = 1; % create a ROC curve on the raw electrode voltage
-    ROC_cell{neuron, options.experiment_type}             = sortaSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
+    ROC_cell{neuron, options.experiment_type}             = spikevalSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
     
 end
 

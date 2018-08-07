@@ -11,7 +11,7 @@ We load in the electrode and patch data, both bandpass filtered from
 100-6000Hz. Electrode data is mean-subtracted. Bad electrodes are removed. 
 
 %}
-experiment      = sortaLoadData(filename, options);
+experiment      = spikevalLoadData(filename, options);
 %{
 Collect the 64 best amplitude-ordered electrodes
 %}
@@ -27,7 +27,7 @@ end
 
 experiment.best_electrode           = -1.*experiment.mea(:,1);
 
-burst_spike_number_for_each_spike   = sortaGetSpikeNumberInBurstIndex(experiment, options.isi_criterion);
+burst_spike_number_for_each_spike   = spikevalGetSpikeNumberInBurstIndex(experiment, options.isi_criterion);
 burst_criterion                     = 1;
 burst_times                         = experiment.spike_times(find(burst_spike_number_for_each_spike > burst_criterion));
 non_burst_times                     = setdiff(experiment.spike_times, burst_times);
@@ -37,19 +37,19 @@ if ~isfield(options,'estimator_on_patch_deriv')
     options.estimator_on_patch_deriv = 0;
 end 
 if options.estimator_on_patch_deriv
-    fourier_coefficients_of_patch_voltage_transformed_in_bins       = sortaGetFourierTransformedPatchVoltage(diff(experiment.patch), options);
+    fourier_coefficients_of_patch_voltage_transformed_in_bins       = spikevalGetFourierTransformedPatchVoltage(diff(experiment.patch), options);
 else
-    fourier_coefficients_of_patch_voltage_transformed_in_bins       = sortaGetFourierTransformedPatchVoltage(experiment.patch, options); 
+    fourier_coefficients_of_patch_voltage_transformed_in_bins       = spikevalGetFourierTransformedPatchVoltage(experiment.patch, options); 
 end
 
 if isfield(options, 'zero_out_when_patch_doesnt_spike')
     if options.zero_out_when_patch_doesnt_spike
-        electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking  = sortaZeroOutElectrodesWhenPatchedNeuronIsntSpiking(experiment);
+        electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking  = spikevalZeroOutElectrodesWhenPatchedNeuronIsntSpiking(experiment);
     else
         electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking = experiment.mea;
     end
 else
-    electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking  = sortaZeroOutElectrodesWhenPatchedNeuronIsntSpiking(experiment);
+    electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking  = spikevalZeroOutElectrodesWhenPatchedNeuronIsntSpiking(experiment);
 end
 
 convolutive_filters_mat                                         = zeros(options.num_convolution_filter_pts, length(experiment.mea(1,:)));
@@ -58,19 +58,19 @@ patch_voltage_estimators_from_single_electrodes_mat             = zeros(experime
 if options.parfor
     parfor ii=1:length(experiment.mea(1,:))
         ['Processing electrode ' num2str(ii)]
-        convolutive_filters_mat(:,ii)                               = sortaMakeConvolutiveFilter(electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking(:,ii), fourier_coefficients_of_patch_voltage_transformed_in_bins, options);
-        patch_voltage_estimators_from_single_electrodes_mat(:,ii)   = sortaMakePatchVoltageEstimatorFromOneElectrode(convolutive_filters_mat(:,ii), experiment.mea(:,ii), options);
+        convolutive_filters_mat(:,ii)                               = spikevalMakeConvolutiveFilter(electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking(:,ii), fourier_coefficients_of_patch_voltage_transformed_in_bins, options);
+        patch_voltage_estimators_from_single_electrodes_mat(:,ii)   = spikevalMakePatchVoltageEstimatorFromOneElectrode(convolutive_filters_mat(:,ii), experiment.mea(:,ii), options);
 
     end
 else
     for ii=1:length(experiment.mea(1,:))
         ['Processing electrode ' num2str(ii)]
-        convolutive_filters_mat(:,ii)                               = sortaMakeConvolutiveFilter(electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking(:,ii), fourier_coefficients_of_patch_voltage_transformed_in_bins, options);
-        patch_voltage_estimators_from_single_electrodes_mat(:,ii)   = sortaMakePatchVoltageEstimatorFromOneElectrode(convolutive_filters_mat(:,ii), experiment.mea(:,ii), options);
+        convolutive_filters_mat(:,ii)                               = spikevalMakeConvolutiveFilter(electrode_voltages_zeroed_out_when_patched_neuron_isnt_spiking(:,ii), fourier_coefficients_of_patch_voltage_transformed_in_bins, options);
+        patch_voltage_estimators_from_single_electrodes_mat(:,ii)   = spikevalMakePatchVoltageEstimatorFromOneElectrode(convolutive_filters_mat(:,ii), experiment.mea(:,ii), options);
     end
 end
 
-centered_convolutive_filters_mat = sortaCenterTheConvolutiveFilters(convolutive_filters_mat, options);
+centered_convolutive_filters_mat = spikevalCenterTheConvolutiveFilters(convolutive_filters_mat, options);
 if options.debug_mode
     sortaPlotConvolutiveFilters(centered_convolutive_filters_mat)
 end
@@ -81,6 +81,7 @@ out.best_electrode                                          = experiment.best_el
 out.spike_times                                             = experiment.spike_times;
 out.patch                                                   = experiment.patch;
 out.patch_voltage_estimators_from_single_electrodes_mat     = patch_voltage_estimators_from_single_electrodes_mat;
+% change the above to out.estimators
 out.centered_convolutive_filters_mat                        = centered_convolutive_filters_mat;
 out.sample_rate                                             = experiment.mea_sample_rate;
 
