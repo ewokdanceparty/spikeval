@@ -53,7 +53,6 @@ options.recording_with_only_58_electrodes   = filename_cell{5}; % set this to fi
 options.working_dir                         = '/media/user/NeuroData1/Dropbox (MIT)/spikeval';
 options.todays_fig_dir                      = '180807';
 
-options.recording_with_only_58_electrodes   = filename_cell{5}; % set this to filename_cell{5} if analyzing the 12 neurons in the paper
 options.recording2_with_only_58_electrodes  = 'asdsdaazgasgf';
 options.debug_mode                          = 0;
 
@@ -96,6 +95,15 @@ for neuron = 1:options.num_neurons
     patch_voltage_estimator_struct  = spikevalMakePatchVoltageEstimatorStruct(filename, options);
     
     options.experiment_type         = 1; % create a ROC curve on the raw electrode voltage
+    ROC_cell{neuron, options.experiment_type}             = spikevalSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
+    
+    options.experiment_type         = 2; % create a ROC curve on the raw electrode voltage
+    ROC_cell{neuron, options.experiment_type}             = spikevalSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
+    
+    options.experiment_type         = 3; % create a ROC curve on the raw electrode voltage
+    ROC_cell{neuron, options.experiment_type}             = spikevalSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
+    
+    options.experiment_type         = 4; % create a ROC curve on the raw electrode voltage
     ROC_cell{neuron, options.experiment_type}             = spikevalSetUpROCAnalysis(filename, patch_voltage_estimator_struct, options);
     
 end
