@@ -108,6 +108,40 @@ for neuron = 1:options.num_neurons
     
 end
 
+%% Calculate area under ROC curves and get p-values
+AUC_cell = cell(number_of_ROC_analyses,1);
+for ii=1:number_of_ROC_analyses
+    options.experiment_type         = ii;
+    AUC_cell{ii} = spikevalCalculatePValuesForAUCs(ROC_cell, options);
+    
+    current_AUC = AUC_cell{ii}.areas;
+    marker_vec = ['+*.xsd^v><ph'];
+    area_fig = figure
+    for jj=1:length(current_AUC(1,:))
+        if options.debug_mode
+            if jj==13
+                plot(current_AUC(:,jj), 'b')
+            elseif jj==14
+                plot(current_AUC(:,jj), 'g')
+            elseif jj==15
+                plot(current_AUC(:,jj), 'm')
+                
+            else
+                plot(current_AUC(:,jj), 'Color', [.5 .5 .5], 'Marker', marker_vec(jj), 'MarkerSize', 14) 
+            end
+        else
+            plot(current_AUC(:,jj), 'Color', [.5 .5 .5])
+        end
+        
+        hold on        
+    end
+    plot(mean(current_AUC, 2), 'k', 'Marker', '.')
+    title(['Experiment type = ' num2str(ii)])
+    ylim(0:1)
+    savefig(area_fig, [options.working_dir '/figures/' options.todays_fig_dir '/AUC exp ' num2str(ii)])
+   
+end
+save([options.working_dir '/results/' options.todays_fig_dir '/AUC'], 'AUC_cell')
 
 
 
