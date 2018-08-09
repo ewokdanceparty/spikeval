@@ -10,13 +10,16 @@ import numpy
 
 app = dash.Dash('burst-firing')
 server = app.server
-
 df = pd.read_csv('bursts4.csv')
 
 if 'DYNO' in os.environ:
     app.scripts.append_script({
         'external_url': 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
     })
+
+
+BACKGROUND = 'rgb(230, 230, 230)'
+COLORSCALE = [[0, "rgb(128,128,128)"], [0.10, "rgb(255,0,0)"], [0.25, "rgb(0,255,0)"], [0.45, "rgb(255,0,255)"], [0.65, "rgb(255,255,0)"], [0.85, "rgb(0,0,255)"], [1, "rgb(255,128,0)"]]
 
 def add_markers( figure_data, molecules, plot_type = 'scatter3d' ):
     indices = []
@@ -50,17 +53,6 @@ def add_markers( figure_data, molecules, plot_type = 'scatter3d' ):
         traces.append(trace)
 
     return traces
-
-BACKGROUND = 'rgb(230, 230, 230)'
-
-#COLORSCALE = [ [0, "rgb(244,236,21)"], [0.3, "rgb(249,210,41)"], [0.4, "rgb(134,191,118)"],
-#                [0.5, "rgb(37,180,167)"], [0.65, "rgb(17,123,215)"], [1, "rgb(54,50,153)"] ]
-
-full_c = 255
-half_c = 127.5
-
-#COLORSCALE = [[0, 'rgb(half_c,half_c,half_c)'], [0.10, 'rgb(full_c,0,0)'], [0.25, 'rgb(0,full_c,0)'], [0.45, 'rgb(full_c,0,full_c)'], [0.65, 'rgb(full_c,full_c,0)'], [0.85, 'rgb(0,0,full_c)'], [1, 'rgb(full_c,half_c,0)']]
-COLORSCALE = [[0, "rgb(128,128,128)"], [0.10, "rgb(255,0,0)"], [0.25, "rgb(0,255,0)"], [0.45, "rgb(255,0,255)"], [0.65, "rgb(255,255,0)"], [0.85, "rgb(0,0,255)"], [1, "rgb(255,128,0)"]]
 
 def scatter_plot_3d(
         x = numpy.log10(df['isi']),
@@ -155,33 +147,14 @@ def scatter_plot_3d(
 
     return dict( data=data, layout=layout )
 
-
-BACKGROUND = 'rgb(230, 230, 230)'
-
-#COLORSCALE = [ [0, "rgb(244,236,21)"], [0.3, "rgb(249,210,41)"], [0.4, "rgb(134,191,118)"],
-#                [0.5, "rgb(37,180,167)"], [0.65, "rgb(17,123,215)"], [1, "rgb(54,50,153)"] ]
-
-
-def make_dash_table( selection ):
-    ''' Return a dash defintion of an HTML table for a Pandas dataframe '''
-    df_subset = df.loc[df['NAME'].isin(selection)]
-    table = []
-    for index, row in df_subset.iterrows():
-        html_row = []
-        for i in range(len(row)):
-            if i == 0 or i == 6:
-                html_row.append( html.Td([ row[i] ]) )
-            elif i == 1:
-                html_row.append( html.Td([ html.A( href=row[i], children='Datasheet' )]))
-            elif i == 2:
-                html_row.append( html.Td([ html.Img( src=row[i] )]))
-        table.append( html.Tr( html_row ) )
-    return table
-
 FIGURE = scatter_plot_3d()
-STARTING_DRUG = 4591
-#DRUG_DESCRIPTION = df.loc[df['NAME'] == STARTING_DRUG]['DESC'].iloc[0]
-DRUG_IMG = df.loc[df['sample'] == STARTING_DRUG]['PIC'].iloc[0]
+
+
+
+
+
+
+
 
 app.layout = html.Div([
     # Row 1: Header and Intro text
@@ -216,10 +189,10 @@ app.layout = html.Div([
                 #html.P('SELECT a drug in the dropdown to add it to the drug candidates at the bottom.')
             #], style={'margin-left': '10px'}),
             
-            dcc.Dropdown(id='chem_dropdown',
-                        multi=True,
-                        value=[ STARTING_DRUG ],
-                        options=[{'label': i, 'value': i} for i in df['COLOR'].tolist()]),
+            #dcc.Dropdown(id='chem_dropdown',
+            #            multi=True,
+            #            value=[ STARTING_DRUG ],
+            #            options=[{'label': i, 'value': i} for i in df['COLOR'].tolist()]),
             ], className='twelve columns' )
 
     ], className='row' ),
@@ -229,11 +202,11 @@ app.layout = html.Div([
     html.Div([
         html.Div([
 
-            html.Img(id='chem_img', src=DRUG_IMG, width='200px', height='200px'),
+            #html.Img(id='chem_img', src=DRUG_IMG, width='200px', height='200px'),
             
             #html.Img(id='chem_img', src="http://scalablephysiology.org/images/fiber.png"),
 
-            html.Br(),
+            #html.Br(),
 
             #html.A(STARTING_DRUG,
             #      id='chem_name',
@@ -262,7 +235,8 @@ app.layout = html.Div([
             dcc.Graph(id='clickable-graph',
                       style=dict(width='700px'),
                       hoverData=dict( points=[dict(pointNumber=0)] ),
-                      figure=FIGURE ),
+                      figure=FIGURE 
+                      ),
 
         ], className='nine columns', style=dict(textAlign='center')),
 
@@ -270,110 +244,13 @@ app.layout = html.Div([
     ], className='row' ),
 
     html.Div([
-        html.Table( make_dash_table( [STARTING_DRUG] ), id='table-element' )
+        #html.Table( make_dash_table( [STARTING_DRUG] ), id='table-element' )
     ])
 
 ], className='container')
 
 
-@app.callback(
-    Output('clickable-graph', 'figure'),
-    [Input('chem_dropdown', 'value'),
-    Input('charts_radio', 'value')])
-def highlight_molecule(chem_dropdown_values, plot_type):
-    return scatter_plot_3d( markers = chem_dropdown_values, plot_type = plot_type )
 
-
-@app.callback(
-    Output('table-element', 'children'),
-    [Input('chem_dropdown', 'value')])
-def update_table(chem_dropdown_value):
-    table = make_dash_table( chem_dropdown_value )
-    return table
-
-
-def dfRowFromHover( hoverData ):
-    ''' Returns row for hover point as a Pandas Series '''
-    if hoverData is not None:
-        if 'points' in hoverData:
-            firstPoint = hoverData['points'][0]
-            if 'pointNumber' in firstPoint:
-                point_number = firstPoint['pointNumber']
-                #return point_number
-                #return df.loc[df['sample'] == 5827]['PIC'].iloc[0]
-                molecule_name = str(FIGURE['data'][0]['text'][point_number]).strip()
-                #print(molecule_name)
-                #molecule_name
-                return molecule_name
-                #return df.loc[df['NAME'] == molecule_name]
-    return pd.Series()
-
-
-#@app.callback(
-#    Output('chem_name', 'children'),
-#    [Input('clickable-graph', 'hoverData')])
-#def return_molecule_name(hoverData):
-#    if hoverData is not None:
-#        if 'points' in hoverData:
-#            firstPoint = hoverData['points'][0]
-#            if 'pointNumber' in firstPoint:
-#                point_number = firstPoint['pointNumber']
-#                molecule_name = str(FIGURE['data'][0]['text'][point_number]).strip()
-#                return molecule_name
-
-
-#@app.callback(
-#    dash.dependencies.Output('chem_name', 'href'),
-#    [dash.dependencies.Input('clickable-graph', 'hoverData')])
-
-'''
-def return_href(hoverData):
-    row = dfRowFromHover(hoverData)
-    if row.empty:
-        return
-    datasheet_link = row['PAGE'].iloc[0]
-    return datasheet_link
-
-'''
-
-@app.callback(
-    Output('chem_img', 'src'),
-    [Input('clickable-graph', 'hoverData')])
-def display_image(hoverData):
-    row = dfRowFromHover(hoverData)
-    print(row)
-    img_src = row#"http://scalablephysiology.org/images/fiber.png"#5827#row['PIC'].iloc[0]
-    return img_src
-    #return 0
-    #if row.empty:
-    #    return
-    #img_src = row['PIC'].iloc[0]
-    #return img_src
-
-
-
-'''
-@app.callback(
-    Output('chem_img', 'src'),
-    [Input('clickable-graph', 'hoverData')])
-def display_image(hoverData):
-    row = dfRowFromHover(hoverData)
-    #if row.empty:
-    #    return
-    img_src = row['PIC'].iloc[0]
-    #img_src = 5827#"http://scalablephysiology.org/images/fiber.png"#row['PIC'].iloc[0]
-    return img_src
-'''
-
-#@app.callback(
-#    Output('chem_desc', 'children'),
-#    [Input('clickable-graph', 'hoverData')])
-#def display_molecule(hoverData):
-#    row = dfRowFromHover(hoverData)
-#    if row.empty:
-#        return
-#    description = row['DESC'].iloc[0]
-#    return description
 
 
 external_css = ["https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
@@ -387,4 +264,4 @@ for css in external_css:
 
 
 if __name__ == '__main__':
-    app.run_server(8012)
+    app.run_server(8014)
