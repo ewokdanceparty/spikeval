@@ -20,7 +20,7 @@ if 'DYNO' in os.environ:
 
 BACKGROUND = 'rgb(230, 230, 230)'
 COLORSCALE = [[0, "rgb(128,128,128)"], [0.10, "rgb(255,0,0)"], [0.25, "rgb(0,255,0)"], [0.45, "rgb(255,0,255)"], [0.65, "rgb(255,255,0)"], [0.85, "rgb(0,0,255)"], [1, "rgb(255,128,0)"]]
-
+'''
 def add_markers( figure_data, molecules, plot_type = 'scatter3d' ):
     indices = []
     drug_data = figure_data[0]
@@ -53,8 +53,9 @@ def add_markers( figure_data, molecules, plot_type = 'scatter3d' ):
         traces.append(trace)
 
     return traces
-
+'''
 def scatter_plot_3d(
+		#hoverinfo = 'skip',
         x = numpy.log10(df['isi']),
         y = df['amp'],
         z = df['sample'],
@@ -69,18 +70,19 @@ def scatter_plot_3d(
         plot_type = 'scatter',
         markers = [] ):
         #):
-
+        
     def axis_template_3d( title, type='linear' ):
         return dict(
             showbackground = True,
             backgroundcolor = BACKGROUND,
-            #gridcolor = 'rgb(255, 255, 255)',
-            gridcolor = 'rgb(0, 0, 0)',
+            gridcolor = 'rgb(255, 255, 255)',
+            #gridcolor = 'rgb(0, 0, 0)',
             title = title,
             type = type,
-            zerolinecolor = 'rgb(255, 255, 255)'
+            #zerolinecolor = 'rgb(255, 255, 255)'
+            zerolinecolor = 'rgb(0, 0, 0)'
         )
-
+        
     def axis_template_2d(title):
         return dict(
             xgap = 10, ygap = 10,
@@ -91,13 +93,13 @@ def scatter_plot_3d(
             zerolinecolor = 'rgb(255, 255, 255)',
             color = '#444'
         )
-
+    '''
     def blackout_axis( axis ):
-        axis['showgrid'] = False
+        axis['showgrid'] = True#False
         axis['zeroline'] = False
         axis['color']  = 'white'
         return axis
-
+    '''
     data = [ dict(
         x = x,
         y = y,
@@ -105,7 +107,7 @@ def scatter_plot_3d(
         mode = 'markers',
         marker = dict(
                 colorscale = COLORSCALE,
-                colorbar = dict( title = "Spike<br>Number" ),
+                #colorbar = dict( title = "Spike<br>Number" ),
                 line = dict( color = '#444' ),
                 reversescale = False,
                 sizeref = 45,
@@ -122,21 +124,21 @@ def scatter_plot_3d(
     layout = dict(
         font = dict( family = 'Raleway' ),
         hovermode = 'closest',
-        margin = dict( r=20, t=0, l=0, b=0 ),
-        showlegend = True,
+        #margin = dict( r=20, t=0, l=0, b=0 ),
+        showlegend = False,
         xaxis = {'type': 'linear', 'title': 'inter-spike interval (ISI)'},
         yaxis = {'type': 'linear', 'title': 'spike amplitude (uV)'},
         
         scene = dict(
-            xaxis = axis_template_3d( xlabel ),
-            yaxis = axis_template_3d( ylabel ),
-            zaxis = axis_template_3d( zlabel, 'log' ),
-            camera = dict(
-                up=dict(x=0, y=0, z=1),
-               center=dict(x=0, y=0, z=0),
-                eye=dict(x=0.08, y=2.2, z=0.08)
+            xaxis = axis_template_2d( xlabel ),
+            yaxis = axis_template_2d( ylabel ),
+            #zaxis = axis_template_3d( zlabel, 'log' ),
+            #camera = dict(
+            #    up=dict(x=0, y=0, z=1),
+            #   center=dict(x=0, y=0, z=0),
+            #    eye=dict(x=0.08, y=2.2, z=0.08)
                 #eye=dict(x=0, y=0, z=0)
-            )
+            #)
         
         )
 
@@ -150,7 +152,8 @@ def scatter_plot_3d(
 FIGURE = scatter_plot_3d()
 
 
-
+STARTING_IMG = 4591
+SPIKE_IMG = df.loc[df['sample'] == STARTING_IMG]['PIC'].iloc[0]
 
 
 
@@ -160,15 +163,15 @@ app.layout = html.Div([
     # Row 1: Header and Intro text
 
     html.Div([
-        html.Img(src="http://web.media.mit.edu/~bdallen/willow.png",#"http://scalablephysiology.org/images/probe.png",
-                style={
-                    'height': '100px',
-                    'float': 'right',
-                    'position': 'relative',
-                    'bottom': '40px',
-                    'left': '50px'
-                },
-                ),
+        #html.Img(src="http://web.media.mit.edu/~bdallen/willow.png",#"http://scalablephysiology.org/images/probe.png",
+        #        style={
+        #            'height': '100px',
+        #            'float': 'right',
+        #            'position': 'relative',
+        #            'bottom': '40px',
+        #            'left': '50px'
+        #        },
+        #        ),
         html.H2('Burst-firing dynamics',
                 style={
                     'position': 'relative',
@@ -202,11 +205,11 @@ app.layout = html.Div([
     html.Div([
         html.Div([
 
-            #html.Img(id='chem_img', src=DRUG_IMG, width='200px', height='200px'),
+            html.Img(id='spike_img', src=SPIKE_IMG, width='300px', height='300px'),
             
             #html.Img(id='chem_img', src="http://scalablephysiology.org/images/fiber.png"),
 
-            #html.Br(),
+            html.Br(),
 
             #html.A(STARTING_DRUG,
             #      id='chem_name',
@@ -217,26 +220,33 @@ app.layout = html.Div([
             #      id='chem_desc',
             #      style=dict( maxHeight='400px', fontSize='12px' )),
 
-        ], className='three columns', style=dict(height='300px') ),
+        ], 
+		#style={'marginTop': 100}),
+        className='three columns', style=dict(height='300px', marginTop='100px') ),
 
         html.Div([
 
-            dcc.RadioItems(
-                id = 'charts_radio',
-                options=[
-                    dict( label='2D Scatter', value='scatter' ),
-                    dict( label='3D Scatter', value='scatter3d' ),
-                    dict( label='2D Histogram', value='histogram2d' ),
-                ],
-                labelStyle = dict(display='inline'),
-                value='scatter'
-            ),
+            #dcc.RadioItems(
+            #    id = 'charts_radio',
+            #    options=[
+            #        dict( label='2D Scatter', value='scatter' ),
+            #        dict( label='3D Scatter', value='scatter3d' ),
+                    #dict( label='2D Histogram', value='histogram2d' ),
+            #    ],
+            #    labelStyle = dict(display='inline'),
+            #    value='scatter'
+            #),
 
             dcc.Graph(id='clickable-graph',
-                      style=dict(width='700px'),
+                      style=dict(width='800px'),
                       hoverData=dict( points=[dict(pointNumber=0)] ),
-                      figure=FIGURE 
-                      ),
+
+                      config={
+                      'displayModeBar': False,
+                      'scrollZoom': True
+                      } ,
+                      figure=FIGURE
+            ),
 
         ], className='nine columns', style=dict(textAlign='center')),
 
@@ -249,7 +259,31 @@ app.layout = html.Div([
 
 ], className='container')
 
+def dfRowFromHover( hoverData ):
+    ''' Returns row for hover point as a Pandas Series '''
+    if hoverData is not None:
+        if 'points' in hoverData:
+            firstPoint = hoverData['points'][0]
+            if 'pointNumber' in firstPoint:
+                point_number = firstPoint['pointNumber']
+                #return point_number
+                #return df.loc[df['sample'] == 5827]['PIC'].iloc[0]
+                spike_name = str(FIGURE['data'][0]['text'][point_number]).strip()
+                #print(molecule_name)
+                #molecule_name
+                return spike_name
+                #return df.loc[df['NAME'] == molecule_name]
+    return pd.Series()
 
+
+@app.callback(
+    Output('spike_img', 'src'),
+    [Input('clickable-graph', 'hoverData')])
+def display_image(hoverData):
+    row = dfRowFromHover(hoverData)
+    #print(row)
+    img_src = row#"http://scalablephysiology.org/images/fiber.png"#5827#row['PIC'].iloc[0]
+    return img_src
 
 
 
