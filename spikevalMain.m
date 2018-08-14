@@ -22,7 +22,7 @@ array. A 1/r model of voltage dropoff was shown to be appropriate for this.
 The pipette localization code is adapted from Jacob Bernstein's original
 code.
 %}
-%%
+%% Run this section to do pipette tracking
 % Load data
 options.dataset     = 'pipette_track_exemplar';
 % options.dataset = 'pipette_track_all';
@@ -30,7 +30,7 @@ options.dataset     = 'pipette_track_exemplar';
 % options.dataset = 'all_recordings';
 
 options.override_pulse_times = false;
-% spikevalLocalizePipette(options);
+spikevalLocalizePipette(options);
 
 %%
 %{
