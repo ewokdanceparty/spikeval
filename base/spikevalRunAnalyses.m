@@ -31,8 +31,6 @@ end
 if options.run_roc_example
     options.dataset = 'roc_exemplar';
     ROCCurves = spikevalSetUpROCAnalysisExemplar(options);
-    
-    
 end
 
 %% Run this section to generate an example voltage estimator (like figure 5, but with 1 minute instead of ~8 minutes of data)

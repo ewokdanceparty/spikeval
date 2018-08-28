@@ -16,7 +16,7 @@ options.data_dir        = '/media/user/NeuroData1/Dropbox (MIT)/Colocalized Reco
 % Base directory for the code
 options.working_dir     = '/media/user/NeuroData1/Dropbox (MIT)/spikeval';
 % What you would like to name the figure subfolder
-options.todays_fig_dir  = '180828_3';
+options.todays_fig_dir  = '180828_4';
 % Run pipette tracking on the exemplar recording from figure 1b-f
 options.run_pipette_tracking_exemplar           = 0;
 % Run pipette tracking on all recordings, which are summarized in figure 1h

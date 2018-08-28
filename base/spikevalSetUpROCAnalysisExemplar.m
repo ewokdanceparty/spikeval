@@ -45,13 +45,19 @@ plot(ROCCurves.all_spikes.FP, ROCCurves.all_spikes.TP, 'k')
 hold on
 plot(ROCCurves.no_burst_spikes.FP, ROCCurves.no_burst_spikes.TP, 'k', 'LineStyle', ':')
 
-title_cell      = cell(2);
-title_cell{1}   = ['num ground truth spikes ' num2str(length(c))];
-title_cell{2}   = ['num non-burst ground truth spikes ' num2str(length(d))];
+xlabel('False positives / total patch spikes')
+ylabel('True positives / total patch spikes')
+
+title_cell      = cell(3,1);
+title_cell{1}   = ['Partial receiver operating characteristic (PROC) curves'];
+title_cell{2}   = ['num ground truth spikes ' num2str(length(c))];
+title_cell{3}   = ['num non-burst ground truth spikes ' num2str(length(d))];
+
+legend('all spikes','no burst spikes')
 
 title(title_cell);
 ylim([0 1]);
 
-spikevalSaveFigures(filename, {ROC_fig}, {'Fig3E'}, options);
+spikevalSaveFigures(filename, {ROC_fig}, {'Fig3E_roc_exemplar'}, options);
 
 %%
