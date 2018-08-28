@@ -22,6 +22,9 @@ switch options.dataset
         filename_cell{12}   = '/160624/20160624_5_5_Whole_02';
     case 'all_recordings'
         
+    case 'roc_exemplar'
+        filename_cell       = cell(1,1);
+        filename_cell{1}    = '/160419/20160419_whole_cell_07';
     otherwise
         'Please enter a valid dataset name'
 end

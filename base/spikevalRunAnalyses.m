@@ -29,8 +29,8 @@ if options.run_pipette_tracking_all_recordings
 end
 %% Run this section to generate an example ROC curve (like figure 3c, but with 1 minute instead of ~8 minutes of data)
 if options.run_roc_example
-    
-    
+    options.dataset = 'roc_exemplar';
+    ROCCurves = spikevalSetUpROCAnalysisExemplar(options);
     
     
 end

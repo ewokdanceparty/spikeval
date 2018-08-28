@@ -7,7 +7,7 @@ b           = estimator_struct.sample_rate;
 c           = estimator_struct.spike_times;
 d           = estimator_struct.non_burst_times;
 
-if strcmp(filename, options.recording_with_only_58_electrodes) || strcmp(filename, options.recording2_with_only_58_electrodes)
+if strcmp(filename, options.recording_with_only_58_electrodes) 
     ordered_electrodes = 1:58;
 else
     ordered_electrodes = 1:64;
@@ -19,7 +19,7 @@ switch options.experiment_type
         a           = estimator_struct.best_electrode;
         
         ROCCurves   = spikevalMakeROCCurves(a, b, c, d, options);
-        %{
+        
         ROC_fig     = figure
         plot(ROCCurves.all_spikes.FP, ROCCurves.all_spikes.TP, 'k')
         hold on
@@ -32,7 +32,7 @@ switch options.experiment_type
         title(title_cell);
         
         spikevalSaveFigures(filename, {ROC_fig}, {'Fig3E'}, options);
-        %}
+        
         %%
     case 2 % generate on patch voltage estimator based on 64 best electrodes, compare bursting and not bursting
         
