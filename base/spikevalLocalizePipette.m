@@ -3,6 +3,8 @@ function [] = spikevalLocalizePipette(options)
 
 filename_cell       = spikevalLoadFilenames(options);
 
+%options.results_dir = [options.working_dir '/figures/' options.todays_fig_dir '/pipette_tracking']; 
+
 fit_function = @spikevalFitVoltagePulse;
 pulse_threshold = 500; % Threshold for finding pulse starts in derivative of intracellular signal, not a sensitive parameter
 pulse_sample_length = 1; %Amount of time to grab for fourier transform of pulses.
@@ -173,10 +175,12 @@ ylabel('Step number')
 [~,fig_filename] = fileparts(filename);
 title(sprintf('%s Pulse Amplitude Across All Channels and Steps',fig_filename),'Interpreter','none');
 colorbar('EastOutside')
-%{
-savefig([options.results_dir 'fig_pulsepower']);
-saveas(fig_pulsepower,[options.results_dir 'fig_pulsepower.pdf']);
-%}
+
+spikevalSaveFigures(filename, {fig_pulse_power}, {'_pipette_tracking_exemplar_power'}, options);
+
+%savefig([options.results_dir 'fig_pulsepower']);
+%saveas(fig_pulsepower,[options.results_dir 'fig_pulsepower.pdf']);
+
 
 %% Fit each of the measurements, plot probe advancement
 fprintf(1,'Starting fit for position of all pipette steps\n');
@@ -198,6 +202,8 @@ end
 fig_final_fit = figure;
 h = plot( fit_result{num_pulses}, [fit_x', fit_y'], pulse_power(num_pulses,good_channels)' );
 legend( h, 'Inverse Distance', 'fitPower vs. fitX, fitY', 'Location', 'NorthEast' );
+
+spikevalSaveFigures(filename, {fig_final_fit}, {'_pipette_tracking_exemplar_fit3D'}, options);
 %keyboard
 %{
 savefig([options.results_dir 'fit3D']);
@@ -319,6 +325,8 @@ if 1%options.PlotTrack
     xlabel('Step Number')
     ylabel('R-square value')
     title('Goodness of fits on each step')
+    
+    spikevalSaveFigures(filename, {fig_summary}, {'_pipette_tracking_exemplar_summary'}, options);
     
     %savefig([options.results_dir 'fig_summary']);
     %saveas(fig_summary,[options.results_dir 'fig_summary.pdf']);
