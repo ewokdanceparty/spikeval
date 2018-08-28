@@ -33,15 +33,17 @@ if options.run_roc_example
     ROCCurves = spikevalSetUpROCAnalysisExemplar(options);
 end
 
-%% Run this section to generate an example voltage estimator (like figure 5, but with 1 minute instead of ~8 minutes of data)
+%% Run this section to generate an example voltage estimator (like figure 5, but with 10s instead of ~8 minutes of data)
 if options.run_voltage_estimator_example
-    
-    
+    options.dataset = 'auc_exemplar';
+    options.total_t = 10;
+    spikevalMakeAUCsFromEstimators(options);
     
 end
 %% Run this section to generate voltage estimators for all recordings and produce AUCs
 
 if options.run_voltage_estimator_all_recordings
-    
+    options.dataset                             = 'paper_recordings';
+    options.total_t = 456;
     spikevalMakeAUCsFromEstimators(options);
 end

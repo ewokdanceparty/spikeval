@@ -46,7 +46,7 @@ options.burst_spike_target          = 1;
 experiment.burst_spike_times        = spikevalGetSpikeTimesByBurstCriterion(filename, options);
 
 %% Retrieve mean waveforms from these spikes
-wfm_mat = sortaGetMeanSpikes(experiment, options, sort([experiment.non_burst_spike_times ; experiment.burst_spike_times], 'ascend')); %including all spikes
+wfm_mat = spikevalGetMeanSpikes(experiment, options, sort([experiment.non_burst_spike_times ; experiment.burst_spike_times], 'ascend')); %including all spikes
 [max_wfm_vec, max_wfm_vec_idx] = max(abs(wfm_mat')); % getting trough of each mean waveform
 max_wfm_vec         = max_wfm_vec';
 max_wfm_vec_idx     = max_wfm_vec_idx';

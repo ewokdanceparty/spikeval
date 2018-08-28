@@ -12,7 +12,7 @@ The mean of the [2^n]th patch triggered spikes, where n={0-6}, is
 plotted and saved for each recording, for figure 4a.
 %}
 
-options.fig_name                            = 'fig_2c';
+options.fig_name                            = 'waveform_on_extracellular_electodes';
 options.wfm_start                           = -.001; % in seconds
 options.wfm_end                             =  .003;
 options.electrodes_to_plot                  = [1 2 4 8 16 32 64];

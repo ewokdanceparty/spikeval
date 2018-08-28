@@ -31,14 +31,14 @@ switch options.experiment_type
         
         title(title_cell);
         
-        spikevalSaveFigures(filename, {ROC_fig}, {'Fig3E'}, options);
+        spikevalSaveFigures(filename, {ROC_fig}, {'Fig3E_ROC'}, options);
         
         %%
     case 2 % generate on patch voltage estimator based on 64 best electrodes, compare bursting and not bursting
         
         
         
-        'Running a linear regression on the patch voltage estimators'
+        'Running a linear regression on the patch voltage estimator from all electrodes'
         regression_result = spikevalRunLinearRegression(estimator_struct, ordered_electrodes);
         
             if options.use_derivative
@@ -53,7 +53,7 @@ switch options.experiment_type
         options.analyze_bursts = 0;
         
         for ii=1:7
-            'Running a linear regression on the patch voltage estimators'
+            'Running a linear regression on the patch voltage estimators from various electrodes (density experiment)'
             electrodes_to_use = ordered_electrodes(1:(2^(ii-1)):end);
             regression_result = spikevalRunLinearRegression(estimator_struct, electrodes_to_use);
             if options.use_derivative
@@ -77,7 +77,7 @@ switch options.experiment_type
         % create a ROC curve from the patch estimate derived from the best
         % n electrodes, where n={1,2,4,8,16,32}
         for ii=1:5
-            'Running a linear regression on the patch voltage estimators'
+            'Running a linear regression on the patch voltage estimators from various electrodes (add-channels experiment)'
             regression_result = spikevalRunLinearRegression(estimator_struct, 1:(2^ii));
             if options.use_derivative
                 ROCCurves       = [ROCCurves ; spikevalMakeROCCurves(diff(regression_result), b, c, d, options)];
@@ -90,7 +90,7 @@ switch options.experiment_type
         % 64 electrodes, except for the one recording where there were
         % only 58 good electrodes
         
-        'Running a linear regression on the patch voltage estimators'
+        'Running a linear regression on the patch voltage estimators from various electrodes (add-channels experiment)'
         ii=6;
         if strcmp(filename, options.recording_with_only_58_electrodes) || strcmp(filename, options.recording2_with_only_58_electrodes)
             regression_result = spikevalRunLinearRegression(estimator_struct, 1:58);

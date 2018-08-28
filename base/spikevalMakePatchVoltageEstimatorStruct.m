@@ -85,6 +85,14 @@ out.patch_voltage_estimators_from_single_electrodes_mat     = patch_voltage_esti
 out.centered_convolutive_filters_mat                        = centered_convolutive_filters_mat;
 out.sample_rate                                             = experiment.mea_sample_rate;
 
+if strcmp(options.dataset, 'auc_exemplar')
+   kernel_fig = figure 
+   plot(out.centered_convolutive_filters_mat(:,1)) 
+   xlabel('samples')
+   title('centered convolutive filter kernel derived from the "closest" electrode')
+   spikevalSaveFigures(filename, {kernel_fig}, {'convolutive_filter_kernel'}, options); 
+end
+
 if isfield(options, 'return_all_ordered_electrodes')
     if options.return_all_ordered_electrodes
         out.ordered_electrodes = experiment.mea;
