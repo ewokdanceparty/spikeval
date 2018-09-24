@@ -3,7 +3,7 @@ function out = spikevalLoadFilenames(options)
 switch options.dataset
     case 'pipette_track_exemplar'
         filename_cell       = cell(1,1);
-        filename_cell{1}    = '/151103/BAHP23_day1_seventh_whole';
+        filename_cell{1}    = '/1103_1/1103';%/151103/BAHP23_day1_seventh_whole';
     case 'pipette_track_all'
         
     case 'paper_recordings'
