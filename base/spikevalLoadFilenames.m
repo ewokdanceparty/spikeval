@@ -24,10 +24,10 @@ switch options.dataset
         
     case 'roc_exemplar'
         filename_cell       = cell(1,1);
-        filename_cell{1}    = '/160419/20160419_whole_cell_07';
+        filename_cell{1}    = '/419/419_7';
     case 'auc_exemplar'
         filename_cell       = cell(1,1);
-        filename_cell{1}    = '/160513/20160513_2_whole_03';
+        filename_cell{1}    = '/513/513_2';%'/160513/20160513_2_whole_03';
     otherwise
         'Please enter a valid dataset name'
 end

@@ -21,7 +21,7 @@ options.working_dir     = '/media/user/NeuroData1/Dropbox (MIT)/spikeval';
 % What you would like to name the figure subfolder
 options.todays_fig_dir  = '180924';
 % Run pipette tracking on the exemplar recording from figure 1b-f
-options.run_pipette_tracking_exemplar           = 1;
+options.run_pipette_tracking_exemplar           = 0;
 % Run pipette tracking on all recordings, which are summarized in figure 1h
 % (may take several minutes)
 options.run_pipette_tracking_all_recordings     = 0;
@@ -29,7 +29,7 @@ options.run_pipette_tracking_all_recordings     = 0;
 options.run_roc_example                         = 0;
 % Generate an example voltage estimator (like figure 5, but with 10s instead of ~8 minutes of data)
 % This should be run on a computer with at least 16GB RAM
-options.run_voltage_estimator_example           = 0;
+options.run_voltage_estimator_example           = 1;
 % Generate voltage estimators for all recordings and produce AUCs. This was
 % tested on a computer with 128GB RAM and took several hours to run.
 options.run_voltage_estimator_all_recordings    = 0;
