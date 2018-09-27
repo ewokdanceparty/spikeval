@@ -20,7 +20,7 @@ from the electrode voltages.
     
     options.recording_with_only_58_electrodes   = '_';
     if length(filename_cell) > 1
-        options.recording_with_only_58_electrodes   = filename_cell{5}; % set this to filename_cell{5} if analyzing the 12 neurons in the paper
+        options.recording_with_only_58_electrodes   = filename_cell{6}; % set this to filename_cell{6} if analyzing the 12 neurons in the paper
     end
     %options.working_dir                         = '/media/user/NeuroData1/Dropbox (MIT)/spikeval';
     %options.todays_fig_dir                      = '180807';
@@ -36,7 +36,7 @@ from the electrode voltages.
     
     options.use_derivative_vec = 1;
     if length(filename_cell) > 1
-        options.use_derivative_vec  = [0 1 1 1 1 0 1 1 1 1 1 1 ];
+        options.use_derivative_vec  = [1 0 1 1 1 1 1 1 0 1 1 1 ];
     end
 
     % The following only has to be run once. It may take a long time (~15 minutes)
@@ -105,9 +105,9 @@ from the electrode voltages.
             case 2
                 title('AUC from estimator based on all electrodes: excluding or not excluding bursts')
             case 3
-                title('AUC from estimator at increasing density')
-            case 4
                 title('AUC from estimator at decreasing density')
+            case 4
+                title('AUC from estimator constructed with 1-n channels')
             otherwise
                 
         end

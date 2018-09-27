@@ -6,14 +6,16 @@ filename_cell       = spikevalLoadFilenames(options);
 %options.results_dir = [options.working_dir '/figures/' options.todays_fig_dir '/pipette_tracking']; 
 
 fit_function = @spikevalFitVoltagePulse;
-pulse_threshold = 500; % Threshold for finding pulse starts in derivative of intracellular signal, not a sensitive parameter
+
 pulse_sample_length = 1; %Amount of time to grab for fourier transform of pulses.
 
 approx_theta = 63;
 approx_delta = 2;
 approx_phi = 0; %NOTE - this cannot be set to zero if using fminsearch, or search algorithm will think it doesn't matter!
+for pipette_trial=1:length(filename_cell)
 
-filename = filename_cell{1};
+filename = filename_cell{pipette_trial};
+%filename = '/media/user/NeuroData1/Dropbox (MIT)/Colocalized Recordings/160531/20160531_2_WholeCell_02.h5';
 
 %%
 fprintf(1,'Loading data from %s\n',filename)
@@ -79,6 +81,14 @@ temp_stop = round(pulse_window(2)*pipette_sample_rate);
 %Square wave is sharp enough that we can detect it with simple
 %differentiation
 intra_dif = pipette(3:end)-pipette(1:end-2);
+
+% The scaling parameter in the abf of one recording was off for an unknown
+% reason, so that recording's threshold is different than that of every other recording.
+if pipette_trial==7
+    pulse_threshold = 10;%500; % Threshold for finding pulse starts in derivative of intracellular signal
+else
+    pulse_threshold = 500; % Threshold for finding pulse starts in derivative of intracellular signal
+end
 
 pulse_times = find(intra_dif > pulse_threshold);
 temp_ind = temp_start;
@@ -241,7 +251,7 @@ track_resid_wrapper = @(x) track_resid(x(1:3),x(4),x(5),x(6));
 track_dev = sqrt(fval/size(pos,1))*2/track_vals(4); %Standard dev of trackvals in microns
 track_fit = track_pos_wrapper(track_vals, size(pos,1));
 
-answered = 1;
+
 
 if 1%options.PlotTrack
     fig_summary = figure('Units','inches','OuterPosition',[5 0 8 8]);
@@ -253,11 +263,9 @@ if 1%options.PlotTrack
     %%% Top Down
     subplot(3,3,1)
     axis equal
-    if ~answered
+ 
         plot(pos(:,1),pos(:,2),'*-r')
-    else
-        errorbar(pos(:,1),pos(:,2),pos_conf(:,2),'*-r')
-    end
+
     hold on
     plot(track_fit(:,1),track_fit(:,2),'-g')
     daspect([1 1 1 ]);
@@ -271,11 +279,9 @@ if 1%options.PlotTrack
     %%% Side View
     subplot(3,3,2)
     axis equal
-    if ~answered
+
         plot(pos(:,2),pos(:,3),'*-r')
-    else
-        errorbar(pos(:,2),pos(:,3),pos_conf(:,2),'*-r')
-    end
+
     hold on
     plot(track_fit(:,2),track_fit(:,3),'-g')
     daspect([1 1 1 ]);
@@ -293,11 +299,9 @@ if 1%options.PlotTrack
     %%% Edge View          
     subplot(3,3,3)
     axis equal
-    if ~answered
+
         plot(pos(:,1),pos(:,3),'*-r')
-    else
-        errorbar(pos(:,1),pos(:,3),pos_conf(:,1),'*-r')
-    end
+
     hold on
     plot(track_fit(:,1),track_fit(:,3),'-g')
     daspect([1 1 1 ]);
@@ -331,7 +335,11 @@ if 1%options.PlotTrack
     %savefig([options.results_dir 'fig_summary']);
     %saveas(fig_summary,[options.results_dir 'fig_summary.pdf']);
 end
+
+%%
+end
 %{
+answered = 1;
 if answered && options.interactive
     finished = true;
     keyboard;
@@ -369,7 +377,6 @@ else
     end
 end
 %}
-answered = true;
 
 % %% Plot 3D version of track
 %     gg = figure

@@ -15,7 +15,7 @@ code.
 if options.run_pipette_tracking_exemplar
     % Load data
     options.dataset     = 'pipette_track_exemplar';
-    % Pipette tracking needs to know when the voltage pulses ("beacon signal)
+    % Pipette tracking needs to know when the voltage pulses ("beacon signal")
     % were active. Change below to "true" to set this manually. Otherwise, it
     % should be hardcoded to give the values in the paper
     options.override_pulse_times = false;
@@ -25,6 +25,7 @@ end
 if options.run_pipette_tracking_all_recordings
     % Load data
     options.dataset = 'pipette_track_all';
+    options.override_pulse_times = false;
     spikevalLocalizePipette(options);
 end
 %% Run this section to generate an example ROC curve (like figure 3c, but with 1 minute instead of ~8 minutes of data)
