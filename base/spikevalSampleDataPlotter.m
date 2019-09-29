@@ -48,10 +48,9 @@ had it as 2D with a singleton dimension, but all other datasets have it as
 %% DATA FILE
 
 % change this to your home directory
-home_dir = '/media/user/NeuroData6/PatchAndMEA_BoydenLab/fig2_neuron1/';
+home_dir = 'D:\Dropbox\PatchAndMEA_BoydenLab\fig2_neuron1\';
 cd(home_dir)
-filename                        = [home_dir 'fig2_neuron1.h5'];
-
+filename                        = 'fig2_neuron1.h5';
 %% CONSTANTS
 options.data_length             = 60;
 % options.data_length             = Inf;
@@ -82,13 +81,11 @@ data.spikes.burst_index         = h5read(filename, '/spikes/burstindex');
 if isinf(options.data_length)
     data.mea                    = h5read(filename, '/filtered/filteredMEA', [1 1], [Inf  Inf]);
     % Load patch clamp data into data.patch
-    %data.patch                      = h5read(filename, '/raw/rawPipette', [1 1], [Inf 1]);
     data.patch                      = h5read(filename, '/raw/rawPipette');
     
 else
     data.mea                    = h5read(filename, '/filtered/filteredMEA', [1 1], [round(options.data_length * data.att.mea_sample_rate)  Inf]);
     % Load patch clamp data into data.patch
-    %data.patch                  = h5read(filename, '/raw/rawPipette', [1 1], [round(options.data_length * data.att.mea_sample_rate) 1]);
     data.patch                  = h5read(filename, '/raw/rawPipette', 1, round(options.data_length * data.att.mea_sample_rate));
 end
 
